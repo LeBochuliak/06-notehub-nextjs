@@ -13,11 +13,11 @@ type AppProps = {
 export default async function App({ searchParams }: AppProps) {
   const queryClient = new QueryClient();
 
-  const { page, search, perPage } = await searchParams;
+  const { page, search } = await searchParams;
 
   queryClient.prefetchQuery({
-    queryKey: ['notes', page, search, perPage],
-    queryFn: () => fetchNotes({ search, page, perPage }),
+    queryKey: ['notes', page, search],
+    queryFn: () => fetchNotes({ search, page }),
     staleTime: 1000 * 60,
   });
 

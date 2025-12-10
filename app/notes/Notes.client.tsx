@@ -1,7 +1,7 @@
 'use client';
 
 import css from '../../components/NotesPage/NotesPage.module.css';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { fetchNotes } from '@/lib/api';
 import { useState, useEffect } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
@@ -18,14 +18,13 @@ export default function NotesClient() {
   const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const perPage = 12;
-
   const closeModal = () => setIsModalOpen(false);
   const openModal = () => setIsModalOpen(true);
 
   const { data, isSuccess } = useQuery({
-    queryKey: ['notes', page, search, perPage],
-    queryFn: () => fetchNotes({ search, page, perPage }),
+    queryKey: ['notes', page, search],
+    queryFn: () => fetchNotes({ search, page }),
+    placeholderData: keepPreviousData,
   });
 
   useEffect(() => {
@@ -71,7 +70,7 @@ export default function NotesClient() {
       {data && data.notes.length > 0 && <NoteList notes={data.notes} />}
       {isModalOpen && (
         <Modal onClose={closeModal}>
-          <NoteForm onClick={closeModal} onSuccess={handleNoteForm} />
+          <NoteForm onSuccess={handleNoteForm} />
         </Modal>
       )}
     </div>

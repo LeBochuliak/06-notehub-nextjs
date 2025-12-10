@@ -10,17 +10,16 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createNote } from '../../lib/api';
 
 interface NoteFormProps {
-  onClick: () => void;
   onSuccess: () => void;
 }
 
-interface OrderFormValues {
+interface NoteFormValues {
   title: string;
   content: string;
   tag: NoteTag;
 }
 
-const initialValues: OrderFormValues = {
+const initialValues: NoteFormValues = {
   title: '',
   content: '',
   tag: 'Todo',
@@ -37,7 +36,7 @@ const validationSchema = Yup.object().shape({
     .required('Tag is required'),
 });
 
-export default function NoteForm({ onClick, onSuccess }: NoteFormProps) {
+export default function NoteForm({ onSuccess }: NoteFormProps) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -49,15 +48,15 @@ export default function NoteForm({ onClick, onSuccess }: NoteFormProps) {
   });
 
   const handleSubmit = (
-    values: OrderFormValues,
-    actions: FormikHelpers<OrderFormValues>
+    values: NoteFormValues,
+    actions: FormikHelpers<NoteFormValues>
   ) => {
     const id = crypto.randomUUID();
     const createdAt = new Date().toISOString();
     const updatedAt = new Date().toISOString();
 
-    actions.resetForm();
     mutation.mutate({ id, ...values, createdAt, updatedAt });
+    actions.resetForm();
   };
 
   const fieldId = useId();
@@ -127,7 +126,7 @@ export default function NoteForm({ onClick, onSuccess }: NoteFormProps) {
             <button
               type="button"
               className={css.cancelButton}
-              onClick={onClick}
+              onClick={onSuccess}
             >
               Cancel
             </button>
